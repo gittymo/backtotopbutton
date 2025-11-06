@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Back To Top Button Using Standard HTML Elements</title>
+    <style>
+        body {
+            height: 2000px; /* Just make the page long enough to enable scrolling for demonstration */
+            font-family: Arial, sans-serif; /* Set a basic font for better readability */
+            margin: 20px; /* Add some margin around the content */
+        }
+
+        /* Using the button element selector to style the button */
+        button {
+            position: fixed;                /* Make the button stay in place when scrolling. */
+            bottom: 20px;                   /* Position it 20px from the bottom edge of the window.*/
+            right: 20px;                    /* Position it 20px from the right edge of the window.*/
+            background-color: #28a745;    /* A nice green color for the button background. */
+            color: white;                 /* White text color for contrast against the green background. */
+            border: none;                   /* Remove the default button border. */
+            padding: 10px 15px;             /* Add some padding inside the button for better appearance. */
+            border-radius: 5px;             /* Slightly rounded corners for a modern look. */
+            cursor: pointer;                /* Change the cursor to a pointer when hovering over the button. */
+            font-size: 16px;                /* Set a readable font size for the button text. */
+            display: none;                  /* Initially hide the button until the user scrolls down. */
+        }
+
+        /* Using the :hover pseudo-class to change the button appearance when hovered over */
+        button:hover {
+            background-color: #218838;    /* Darker green when the user hovers over the button. */
+        }
+    </style>
+</head>
+<body>
+    <h1>A Back To Top Button Using Standard HTML Elements</h1>
+    <p>This is a demonstration of a back to top button using standard HTML elements and a bit of JavaScript.</p>
+    <p>The button remains hidden until the user scrolls down 60% of the page height. Once visible, clicking the button smoothly scrolls the page back to the top.</p>
+    <p>Whilst this approach is simple and effective, it has a few limitations, such as the scroll percentage only being changeable in the JavaScript code, which means the user cannot adjust it without modifying the code and being aware of what the code does.</p>
+    <p>The additional JavaScript coding requirements make implementation a little harder, but it does allow for more customization and control over the button's behavior than a basic static button.</p>
+    <p><a href="./basic.html">View the basic HTML example</a>&nbsp;|&nbsp;<a href="./custom.html">View the custom HTML element example</a></p>
+    <button id="back-to-top">Back to Top</button>
+
+    <script>
+        const showButtonPercentage = 0.6; // Percentage of page height to scroll before showing the button
+        const backToTopButton = document.getElementById("back-to-top"); // Get the button element by its ID
+
+        // Set up an event listener for the window's scroll event, this will control the button's visibility.
+        window.onscroll = function() {
+            // Make sure the showButtonPercentage is between 0 and 1
+            if (showButtonPercentage < 0 || showButtonPercentage > 1) {
+                console.error("showButtonPercentage must be between 0 and 1");
+                return;
+            }
+            // Show or hide the button based on scroll position - we only update the display style if it needs to
+            // change.
+            const showButtonVerticalPosition = window.innerHeight * showButtonPercentage;
+            const currentScrollPosition = window.scrollY || document.documentElement.scrollTop;
+            if (currentScrollPosition > showButtonVerticalPosition) {
+                if (backToTopButton.style.display !== "block") {
+                    backToTopButton.style.display = "block";
+                }
+            } else {
+                if (backToTopButton.style.display !== "none") {
+                    backToTopButton.style.display = "none";
+                }
+            }
+        };
+
+        // Register a click event listener on the button using its ID.
+        // When clicked, the page content will smoothly scroll back to the top.
+        backToTopButton.onclick = function() {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        };
+    </script>
+</body>
+</html>

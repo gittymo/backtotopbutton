@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Basic Back To Top Button</title>
+</head>
+<style>
+    body {
+        height: 2000px; /* Just make the page long enough to enable scrolling for demonstration */
+        font-family: Arial, sans-serif; /* Set a basic font for better readability */
+        margin: 20px; /* Add some margin around the content */
+    }
+
+    /* Using the #back-to-top ID selector to style the button */
+    #back-to-top {
+        position: fixed;                /* Make the button stay in place when scrolling. */
+        bottom: 20px;                   /* Position it 20px from the bottom edge of the window.*/
+        right: 20px;                    /* Position it 20px from the right edge of the window.*/
+        background-color: #007BFF;    /* A nice blue color for the button background. */
+        color: white;                 /* White text color for contrast against the blue background. */
+        border: none;                   /* Remove the default button border. */
+        padding: 10px 15px;             /* Add some padding inside the button for better appearance. */
+        border-radius: 5px;             /* Slightly rounded corners for a modern look. */
+        cursor: pointer;                /* Change the cursor to a pointer when hovering over the button. */
+        font-size: 16px;                /* Set a readable font size for the button text. */
+    }
+
+    /* Using the :hover pseudo-class to change the button appearance when hovered over */
+    #back-to-top:hover {
+        background-color: #0056b3;    /* Darker blue when the user hovers over the button. */
+    }
+</style>
+<body>
+    <h1>A Basic Back To Top Button</h1>
+    <p>This is a very simple "Back to Top" button created using HTML, CSS, and JavaScript.</p>
+    <p>The button always remains visible, and when the user clicks it, the page smoothly scrolls back to the 
+        top of the content.</p>
+    <p>This implementation is straightforward and easy to understand.  Using CSS, you can customize the button's appearance to fit your website's design.  However, outside of basic styling, there are no additional features such as animations (other than :hover, where here we set the button background to a darker blue) or visibility toggling based on scroll position.</p>
+    <p>Also, this and all the other examples require JavaScript to handle the button click event to perform the scrolling action - there is no alternative way of performing this action!</p>
+    <p><a href="./standard.html">View the standard HTML example</a>&nbsp;|&nbsp;<a href="./custom.html">View the custom HTML element example</a></p>
+    <button id="back-to-top">Back to Top</button>
+
+    <script>
+        // Register a click event listener on the button using its ID.
+        // When clicked, the page content will smoothly scroll back to the top.
+        document.getElementById("back-to-top").onclick = function() {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        };
+    </script>
+</body>
+</html>

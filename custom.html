@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Back To Top Button Using A Custom HTML Element</title>
+    <style>
+        body {
+            height: 2000px; /* Just make the page long enough to enable scrolling for demonstration */
+            font-family: Arial, sans-serif; /* Set a basic font for better readability */
+            margin: 20px; /* Add some margin around the content */
+        }
+
+        /* Using the custom element selector to style the button */
+        back-to-top-button {
+            position: fixed;                /* Make the button stay in place when scrolling. */
+            bottom: 20px;                   /* Position it 20px from the bottom edge of the window.*/
+            right: 20px;                    /* Position it 20px from the right edge of the window.*/
+            background-color: #17a2b8;    /* A nice teal color for the button background. */
+            color: white;                 /* White text color for contrast against the teal background. */
+            border: none;                   /* Remove the default button border. */
+            padding: 10px 15px;             /* Add some padding inside the button for better appearance. */
+            border-radius: 5px;             /* Slightly rounded corners for a modern look. */
+            cursor: pointer;                /* Change the cursor to a pointer when hovering over the button. */
+            font-size: 16px;                /* Set a readable font size for the button text. */
+            opacity: 0;                     /* Initially hide the button until the user scrolls down. */
+            transition: opacity 0.5s, transform 0.5s;
+                   /* Smooth transition for the opacity and position when the button is shown/hidden. */
+            transform: translateY(40px);    /* Slightly move the button down when hidden for a subtle effect. */
+        }
+
+        /* Using the :hover pseudo-class to change the button appearance when hovered over */
+        back-to-top-button:hover {
+            background-color: #117a8b;    /* Darker teal when the user hovers over the button. */
+        }
+
+        /* Show the button when the 'show' attribute is set to true */
+        back-to-top-button[show="true"] {
+            opacity: 1;                     /* Show the button when the attribute 'show' is set to true */
+            transform: translateY(0);       /* Move the button back to its original position */
+        }
+    </style>
+    <script>
+        class BackToTopButton extends HTMLElement {
+            #buttonColour = '#17a2b8'; // Default button colour
+            constructor() {
+                super();
+
+                // Set up button click event listener. This will scroll the page back to the top when the button is
+                // clicked.
+                this.addEventListener('click', () => {
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                });
+                
+                // Set up scroll event listener for the window. This will control the button's visibility as the user 
+                // scrolls the page content.
+                this.scrollHandler = () => {
+                    // Try to get the show-button-percentage attribute, defaulting to 0.5 (50%) if not set.
+                    const showButtonPercentage = parseFloat(this.getAttribute('show-button-percentage')) || 0.5;
+                    // Make sure the showButtonPercentage is between 0 and 1
+                    if (showButtonPercentage < 0 || showButtonPercentage > 1) {
+                        console.error("show-button-percentage must be between 0 and 1");
+                        return;
+                    }
+                    // Calculate scroll position as a percentage of total scrollable content
+                    const scrollableHeight = document.body.scrollHeight - window.innerHeight;
+                    const scrollPosition = window.scrollY / scrollableHeight;
+                    // Set the 'show' attribute based on scroll position (this will trigger CSS state changes to the
+                    // button, causing it to animate (either slide up and fade in or slide down and fade out).
+                    this.setAttribute('show', scrollPosition > showButtonPercentage);
+                };
+                
+                // Add the window scroll event listener when the element is added to the page.
+                window.addEventListener('scroll', this.scrollHandler);
+            }
+            
+            disconnectedCallback() {
+                // Clean up event listener when element is removed
+                window.removeEventListener('scroll', this.scrollHandler);
+            }
+
+            // Handle changes to observed attributes.  Don't forget, if you want to add new attributes to your custom
+            // element, you will also need to  update the observedAttributes static getter below, otherwise any changes
+            // to the new attribute will be ignored, even if you put code to handle them here.
+            attributeChangedCallback(name, oldValue, newValue) {
+                if (newValue.trim().length === 0) return; // Ignore empty values
+                if (oldValue === newValue) return; // Ignore unchanged values
+
+                switch (name) {
+                    case 'colour':
+                        this.colour = newValue;
+                        break;
+                }
+            }
+
+            // Specify the attributes to observe for changes.  You need to put any attribute names you want to monitor in 
+            // this array.
+            static get observedAttributes() {
+                return ['colour'];
+            }
+
+            // Provide a public API to get and set the button colour programmatically.
+            get colour() {
+                // We're using a private field to hold the current button colour, rather than accessing the attribute
+                // directly here.  You can access the attribute value using this.getAttribute('colour') if you prefer,
+                // but don't forget to change the setter below as well!
+                return this.#buttonColour;
+            }
+
+            set colour(value) {
+                this.#buttonColour = value;
+                this.style.backgroundColor = value;
+            }
+
+            // Provide a public API to get and set the scroll percentage at which the button is shown.
+            get showButtonPercentage() {
+                // Note: It's usually nicer to use a private field of the class to hold the current value, but you can
+                // also read it from the attribute as shown here.  If the value doesn't exist or isn't a valid number,
+                // we default to 0.5 (50%).
+                return parseFloat(this.getAttribute('show-button-percentage')) || 0.5;
+            }
+
+            set showButtonPercentage(value) {
+                // Again, we set the attribute so that the value is reflected in the HTML. If the value is invalid, we default to 0.5 (50%).
+                this.setAttribute('show-button-percentage', parseFloat(value) || 0.5);
+            }
+        }
+
+        // Register the custom element type in the DOM (Document Object Model) so that it can be used in the HTML.
+        // This is important - without this line, the browser won't know about our custom element and it won't work!
+        customElements.define('back-to-top-button', BackToTopButton);
+    </script>
+</head>
+<body>
+    <h1>Back To Top Button Using A Custom HTML Element</h1>
+    <p>This is a demonstration of a back to top button using a custom HTML element along with CSS and JavaScript.</p>
+    <p>The button remains hidden until the user scrolls down past a certain point in the page defined by the attribute
+        'show-button-percentage' on the custom element. Once visible, clicking the button smoothly scrolls the page back to the top.</p>
+    <p>This approach allows for greater flexibility, as the scroll percentage can be easily adjusted directly in the HTML
+        without modifying the JavaScript code. However, it does require understanding of custom elements and may have compatibility considerations with older browsers.</p>
+    <p>One nice benefit of using custom elements is that we can use custom attributes to trigger animations or other behaviors without needing to write additional JavaScript code.  For example, this button uses a custom attribute 'show' the value of which is set in Javascript when the page is scrolled. CSS rules are set up to use an attribute selector [show="true"] to apply styles when the button is visible, and we use this to create a CSS animation that moves and fades the button in an out of view when necessary.</p>
+    <p>You can see another example of where using custom elements and attributes is beneficial. Using the other attribute that has been defined for our custom element, named 'colour', and setting it to a valid value allows the user creating the web page to define the button's background color without having to know anything about the CSS for the element.  We can even provide an API to allow the button's colour to be set programmatically in JavaScript!</p>
+    <p>Unfortunately, there is a lot more coding involved with custom elements like this &lt;back-to-top-button&gt;, but they do present the most flexibility, offering a way to create reusable components that can be easily integrated into different parts of a web application, whilst at the same time reducing code duplication and improving maintainability.</p>
+    <p><a href="./basic.html">View the basic HTML example</a>&nbsp;|&nbsp;<a href="./standard.html">View the standard HTML example</a></p>
+
+    <!-- Add our custom button element to the web page, setting it to trigger when half the page is scrolled and giving it
+         a lovely orange colour. -->
+    <back-to-top-button id="back-to-top" show-button-percentage="0.5" colour="#ff7711">Back To Top</back-to-top-button>
+</body>
+</html>
