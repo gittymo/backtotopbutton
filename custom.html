@@ -139,6 +139,7 @@
     <p>This approach allows for greater flexibility, as the scroll percentage can be easily adjusted directly in the HTML
         without modifying the JavaScript code. However, it does require understanding of custom elements and may have compatibility considerations with older browsers.</p>
     <p>One nice benefit of using custom elements is that we can use custom attributes to trigger animations or other behaviors without needing to write additional JavaScript code.  For example, this button uses a custom attribute 'show' the value of which is set in Javascript when the page is scrolled. CSS rules are set up to use an attribute selector [show="true"] to apply styles when the button is visible, and we use this to create a CSS animation that moves and fades the button in an out of view when necessary.</p>
+    <p>The HTML for the button on this page is:<br><code>&lt;back-to-top-button id="back-to-top" show-button-percentage="0.4" colour="#ff7711"&gt;Back To Top&lt;/back-to-top-button&gt;&lt;/code&gt;</code></p>
     <p>You can see another example of where using custom elements and attributes is beneficial. Using the other attribute that has been defined for our custom element, named 'colour', and setting it to a valid value allows the user creating the web page to define the button's background color without having to know anything about the CSS for the element.  We can even provide an API to allow the button's colour to be set programmatically in JavaScript!</p>
     <p>Unfortunately, there is a lot more coding involved with custom elements like this &lt;back-to-top-button&gt;, but they do present the most flexibility, offering a way to create reusable components that can be easily integrated into different parts of a web application, whilst at the same time reducing code duplication and improving maintainability.</p>
     <p><a href="./basic.html">View the basic HTML example</a>&nbsp;|&nbsp;<a href="./standard.html">View the standard HTML example</a></p>
@@ -146,6 +147,6 @@
 
     <!-- Add our custom button element to the web page, setting it to trigger when half the page is scrolled and giving it
          a lovely orange colour. -->
-    <back-to-top-button id="back-to-top" show-button-percentage="0.5" colour="#ff7711">Back To Top</back-to-top-button>
+    <back-to-top-button id="back-to-top" show-button-percentage="0.4" colour="#ff7711">Back To Top</back-to-top-button>
 </body>
 </html>
